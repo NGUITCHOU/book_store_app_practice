@@ -82,7 +82,7 @@ export const removeBook = createAsyncThunk('books/removeBook', async (id) => {
   return id;
 });
 
-export const bookSlice = createSlice({
+const bookSlice = createSlice({
   name: 'books',
   initialState,
   extraReducers: (builder) => {
