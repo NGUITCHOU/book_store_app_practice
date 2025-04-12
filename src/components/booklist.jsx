@@ -19,14 +19,14 @@ const BookList = () => {
   const loading = useSelector((state) => state.books.loading);
   const error = useSelector((state) => state.books.error);
 
-  if (loading) {
-    return (
-      <p>
-        Loading...
-        {error}
-      </p>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <p>
+  //       Loading...
+  //       {error}
+  //     </p>
+  //   );
+  // }
   if (error) {
     return (
       <>

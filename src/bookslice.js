@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const apiKey = 'm4EwBGqXI281WdinvzcP';
 
@@ -11,42 +11,38 @@ const initialState = {
 
 // Async thunk to fetch books from the API
 export const fetchBooks = createAsyncThunk('books/fetchBooks', async () => {
-try{
-  const response = await fetch(`https://us-central1-bookstore-api-e63c8.cloudfunctions.net/bookstoreApi/apps/${apiKey}/books`, {
-    method: 'GET',
-    headers: {
-      'Content-type': 'application/json',
-    },
-  });
+  try {
+    const response = await fetch(`https://us-central1-bookstore-api-e63c8.cloudfunctions.net/bookstoreApi/apps/${apiKey}/books`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch books');
-  }else{
-    const res = await response.json();
+    if (!response.ok) {
+      throw new Error('Failed to fetch books');
+    } else {
+      const res = await response.json();
 
-   const flatObject = Object.entries(res).flatMap(([id, books]) => books.map((book) => {
-    console.log(book, id);
-    const bookProp = {
-      id,
-      title: book.title,
-      author: book.author,
-      category: book.category
-    };
+      const flatObject = Object.entries(res).flatMap(([id, books]) => books.map((book) => {
+        const bookProp = {
+          id,
+          title: book.title,
+          author: book.author,
+          category: book.category,
+        };
 
-    return bookProp;
-  }));
+        return bookProp;
+      }));
 
-return flatObject;
+      return flatObject;
+    }
+  } catch {
+    return [];
   }
-  
-}catch{
-  console.log('unable to fetch books from the API');
-  return [];
-}
 });
 
 export const postBook = createAsyncThunk('books/addBook', async (book) => {
-try{
   const response = await fetch(`https://us-central1-bookstore-api-e63c8.cloudfunctions.net/bookstoreApi/apps/${apiKey}/books`, {
     method: 'POST',
     headers: {
@@ -57,9 +53,6 @@ try{
   if (!response.ok) {
     throw new Error('Failed to postBook book');
   }
-}catch{
-  console.log('unable to postbook with your big head');
-}
 });
 
 export const editBook = createAsyncThunk('books/editBook', async (book) => {
@@ -79,9 +72,9 @@ export const editBook = createAsyncThunk('books/editBook', async (book) => {
 export const removeBook = createAsyncThunk('books/removeBook', async (id) => {
   const response = await fetch(`https://us-central1-bookstore-api-e63c8.cloudfunctions.net/bookstoreApi/apps/${apiKey}/books/${id}`, {
     method: 'DELETE',
-    headers:{
-      'Content-type':'application/json'
-    }
+    headers: {
+      'Content-type': 'application/json',
+    },
   });
   if (!response.ok) {
     throw new Error('Failed to remove book');
@@ -94,47 +87,63 @@ export const bookSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
-      .addCase(fetchBooks.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBooks.fulfilled, (state, action) => {
-        state.loading = false;
-        state.books = action.payload;
-      })
-      .addCase(fetchBooks.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
-      });
+      .addCase(fetchBooks.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(fetchBooks.fulfilled, (state, action) => ({
+        ...state,
+        loading: false,
+        books: action.payload,
+      }))
+      .addCase(fetchBooks.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error: action.error.message,
+      }))
 
-      builder
-      .addCase(postBook.pending, (state)=>{
-        state.loading = true;
-        state.error = null
+      .addCase(postBook.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(postBook.fulfilled, (state, action) => {
+        if (action.payload) {
+          return {
+            ...state,
+            loadin: false,
+            books: [...state.books, action.payload],
+          };
+        }
+        return {
+          ...state,
+          loading: false,
+          books: state.books,
+        };
       })
-      .addCase(postBook.fulfilled, (state, action)=>{
-        state.pending = false;
-        state.books = [...state, action.payload];
-        state.error = '';
-      })
-      .addCase(postBook.rejected, (state, action)=>{
-        state.loading = false;
-        state.error = action.error.message
-      });
+      .addCase(postBook.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error: action.error.message,
+      }));
 
-      builder
-      .addCase(removeBook.pending, (state)=>{
-        state.loading = false;
-        state.error = null
-      })
-      .addCase(removeBook.fulfilled, (state, action)=>{
-        state.loading = false;
-        state.books = state.books.filter((book)=> book.id !== action.payload)
-      })
-      .addCase(removeBook.rejected, (state,action)=>{
-        state.loading = false;
-        state.error = action.error.message
-      })
+    builder
+      .addCase(removeBook.pending, (state) => ({
+        ...state,
+        loading: true,
+        error: null,
+      }))
+      .addCase(removeBook.fulfilled, (state, action) => ({
+        ...state,
+        loading: false,
+        books: state.books.filter((book) => book.id !== action.payload),
+      }))
+      .addCase(removeBook.rejected, (state, action) => ({
+        ...state,
+        loading: false,
+        error: action.error.message,
+      }));
   },
 });
 
