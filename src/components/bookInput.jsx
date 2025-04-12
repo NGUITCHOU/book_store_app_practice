@@ -12,7 +12,7 @@ const BookInput = () => {
   const [title, setTitle] = useState('');
   const HandleAddBook = () => {
     if (category === '' || author === '' || title === '') {
-      alert('empty forms can be submmited');
+      throw new Error('empty forms can be submited');
     } else {
       const book = {
         item_id: uuidv4(),
