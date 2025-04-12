@@ -1,0 +1,60 @@
+
+.nav {
+  display: flex;
+  gap: 30rem;
+  font-size: 20px;
+  padding: 2rem;
+  justify-content: space-between;
+}
+
+h1 {
+  color: blue;
+}
+
+ul {
+  display: flex;
+  gap: 5rem;
+}
+
+nav ul li {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  font-weight: bold;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+ul li a {
+  text-decoration: none;
+}
+
+.booklist li {
+  display: flex;
+  border: 1px solid wheat;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+button {
+  background-color: white;
+  color: rgb(105, 105, 250);
+  gap: 50px;
+  border: none;
+}
+
+.progress h3{
+  font-weight: lighter;
+}
+
+.progress button{
+  color: whitesmoke;
+  background-color: blue;
+  padding: 8px;
+  width: 180px;
+  border-radius: 3px;
+}
+
+.booklist_content{
+  margin: 10px;
+}
