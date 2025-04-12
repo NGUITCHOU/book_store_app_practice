@@ -43,11 +43,11 @@ button {
   border: none;
 }
 
-.progress h3{
+.progress h3 {
   font-weight: lighter;
 }
 
-.progress button{
+.progress button {
   color: whitesmoke;
   background-color: blue;
   padding: 8px;
@@ -55,6 +55,6 @@ button {
   border-radius: 3px;
 }
 
-.booklist_content{
+.booklist_content {
   margin: 10px;
 }
